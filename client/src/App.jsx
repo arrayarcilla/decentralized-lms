@@ -1,24 +1,17 @@
-import { EthProvider } from "./contexts/EthContext";
-import Intro from "./components/Intro/";
-import Setup from "./components/Setup";
-import Demo from "./components/Demo";
-import Footer from "./components/Footer";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import SideBar from "./components/Sidebar";
+import Catalog from "./views/Catalog";
 
 function App() {
   return (
-    <EthProvider>
-      <div id="App">
-        <div className="container">
-          <Intro />
-          <hr />
-          <Setup />
-          <hr />
-          <Demo />
-          <hr />
-          <Footer />
-        </div>
-      </div>
-    </EthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<SideBar />}/>
+          <Route path='/catalog' element={<Catalog />} />
+        </Routes>
+      </BrowserRouter>
   );
 }
 

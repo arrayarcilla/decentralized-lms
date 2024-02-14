@@ -91,7 +91,8 @@ p span.code {
 }
 
 hr {
-  margin: 4rem 0;
+  margin: 1rem 0;
+  width: 100%
 }
 
 #App .container .welcome h1 {
@@ -150,4 +151,15 @@ hr {
 #App .container footer a {
   display: inline-block;
   margin: 2rem 1rem 0 0;
+}
+
+/* ---------------- CUSTOM STYLES ------------------ */
+
+.form-description {
+  margin-top: -1em;
+}
+
+.application_content {
+  margin-top: 3em;
+  margin-left: 11em
 }
