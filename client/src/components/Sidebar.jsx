@@ -109,18 +109,7 @@ function SideBar() {
                     <Icon name="add user"/>
                     Procurements
                 </MenuItem>
-            </Sidebar>
-            
-            
-
-            <div class="application_content">
-                <LoginForm />
-                <hr />
-                <RegisterForm />
-                <hr />
-                <Footer />
-            </div>
-            
+            </Sidebar>  
         </>
     );
 }
