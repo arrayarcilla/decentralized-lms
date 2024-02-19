@@ -1,17 +1,17 @@
 import React from 'react';
 
 import SideBar from '../components/Sidebar';
-import CatalogTable from '../components/CatalogTable';
+import MemberTable from '../components/MemberTable';
 
-function Catalog() {
+function Member() {
 	return (
 		<>
 			<SideBar />
 			<div class='content'>
-				<CatalogTable />
+					<MemberTable />
 			</div>
 		</>
-	);
+	)
 }
 
-export default Catalog;
+export default Member;

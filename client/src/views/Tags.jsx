@@ -1,17 +1,16 @@
 import React from 'react';
 
 import SideBar from '../components/Sidebar';
-import CatalogTable from '../components/CatalogTable';
 
-function Catalog() {
+function Tags() {
 	return (
 		<>
 			<SideBar />
 			<div class='content'>
-				<CatalogTable />
+				<h1>Tags Page</h1>
 			</div>
 		</>
 	);
 }
 
-export default Catalog;
+export default Tags;
