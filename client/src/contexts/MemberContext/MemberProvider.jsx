@@ -1,17 +1,16 @@
 import React, { useReducer, useCallback, useEffect } from "react";
-import Web3 from "web3";
-import EthContext from "./EthContext";
+import AdminContext from "./MemberContext";
+import useAdmin from "./useMember";
 import { reducer, actions, initialState } from "./state";
 
-function EthProvider({ children }) {
+function EthProvider({ children, value }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { state: { web3, accounts, networkID } } = useAdmin();
+  console.log(value);
 
   const init = useCallback(
     async artifact => {
       if (artifact) {
-        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-        const accounts = await web3.eth.requestAccounts();
-        const networkID = await web3.eth.net.getId();
         const { abi } = artifact;
         let address, contract;
         try {
@@ -30,7 +29,7 @@ function EthProvider({ children }) {
   useEffect(() => {
     const tryInit = async () => {
       try {
-        const artifact = require("../../contracts/Account.json");
+        const artifact = require("../../contracts/Member.json");
         init(artifact);
       } catch (err) {
         console.error(err);
@@ -53,12 +52,12 @@ function EthProvider({ children }) {
   }, [init, state.artifact]);
 
   return (
-    <EthContext.Provider value={{
+    <AdminContext.Provider value={{
       state,
       dispatch
     }}>
       {children}
-    </EthContext.Provider>
+    </AdminContext.Provider>
   );
 }
 
