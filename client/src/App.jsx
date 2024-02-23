@@ -1,15 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import SideBar from './components/Sidebar';
-import CatalogTable from './components/CatalogTable';
-import MemberTable from './components/MemberTable';
-
-
-
 //--- Views Imports
-import Home from './views/Home';
+import LandingPage from './views/LandingPage';
 
+import Dashboard from './views/Dashboard';
 import Catalog from './views/Catalog';
 import Categories from './views/Categories';
 import Authors from './views/Authors';
@@ -27,8 +22,9 @@ function App() {
 			<BrowserRouter>
 		
 				<Routes>
-					<Route path='/' element={<Home />}/>
+					<Route path='/' element={<LandingPage />} />
 
+					<Route path='/dashboard' element={<Dashboard />} />
 					<Route path='/catalog' element={<Catalog />} />
 					<Route path='/categories' element={<Categories />} />
 					<Route path='/authors' element={<Authors />} />

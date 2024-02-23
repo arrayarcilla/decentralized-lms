@@ -3,21 +3,13 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 
-//--- Component Imports
-import LoginForm from "./Login";
-import RegisterForm from "./Register";
-import Demo from "../components/Demo";
-import Footer from "../components/Footer";
-
 //--- Other Imports
 import {
     SidebarPusher,
     MenuItem,
-    Header,
     Icon,
     Menu,
     Sidebar,
-    Segment,
     Popup,
 } from "semantic-ui-react";
 
@@ -35,7 +27,7 @@ function SideBar() {
 							visible
 							width="thin"
 					>
-						<Link to='/'>
+						<Link to='/dashboard'>
 							<MenuItem as="a">
 								<Icon name="home" />
 								Dashboard
