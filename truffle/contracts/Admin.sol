@@ -2,16 +2,18 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "./Account.sol";
+import "./Library.sol";
 
-contract Admin is Account{
+contract Admin is Library{
 
-    function addItem( MediaType _mediaType, Category _category, string memory _title, uint _itemNumber, string memory _publish, uint _edition,  uint _year, string memory _seriesName, string[] memory _tags, uint _copies, bool _isAvailable) internal {
+    function addItem( MediaType _mediaType, Category _category, string memory _title, uint _itemNumber, string memory _publish, uint _edition,  uint _year, string memory _seriesName, string[] memory _tags, uint _copies, bool _isAvailable) public {
         
-        Item memory tempItem = Item(_mediaType, _category, _title, _itemNumber, _publish, _edition, _year, _seriesName, _tags, _copies, _isAvailable, itemId);
+        Item memory tempItem = Item(_mediaType, _category, _title, _itemNumber, _publish, _edition, _year, _seriesName, _tags, _isAvailable, itemId);
         
         itemList[itemId] =  tempItem;
         itemId++;
+        specificItemListCount[itemId] = _copies;
+
 
         sortByMediaType[_mediaType].push(tempItem);
         mediaTypeCount[_mediaType]++;
@@ -23,27 +25,23 @@ contract Admin is Account{
     }
     
 
-    function deleteItem(uint _ID) internal {
+    function deleteItem(uint _ID) public {
         itemList[_ID].isAvailable = false;
     }
 
-    function editItem( Category _category, string memory _seriesName, string[] memory _tags, uint _copies, bool _isAvailable, uint _ID) internal {
-        Item memory tempItem = Item(itemList[_ID].mediaType, _category, itemList[_ID].title, itemList[_ID].itemNumber, itemList[_ID].publisher, itemList[_ID].edition, itemList[_ID].year, _seriesName, _tags, _copies, _isAvailable, itemId);
-        
+    function editItem( uint _ID, Category _category, string memory _seriesName, string[] memory _tags, uint _copies, bool _isAvailable) public {
+        Item memory tempItem = Item(itemList[_ID].mediaType, _category, itemList[_ID].title, itemList[_ID].itemNumber, itemList[_ID].publisher, itemList[_ID].edition, itemList[_ID].year, _seriesName, _tags, _isAvailable, itemId);
         itemList[_ID] =  tempItem;
+        specificItemListCount[_ID] = _copies;
     }
 
-    function showLIstOfMemebersFromBarrowedITem(uint _itemID)internal view returns(member[] memory){
-        member[] memory list = new member[](memberItemListCount[_itemID]);
+    function showListOfMemebersFromBarrowedITem(uint _itemID)public view returns(address[] memory){
+        address[] memory list = new address[](barrowedItemCount[_itemID]);
       
-        for(uint i = 0; i < memberItemListCount[_itemID]; i++){
-            member memory currentMember =  memberItemList[_itemID][i];
+        for(uint i = 0; i < barrowedItemCount[_itemID]; i++){
+            address currentMember =  whoBarrowedList[_itemID][i];
             list[i] = currentMember;
         }
         return list;
     }
-
-    // function deleteMemeber(uint _memeberId)public {
-
-    // }
 }

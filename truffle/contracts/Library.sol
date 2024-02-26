@@ -15,38 +15,59 @@ contract Library{
         uint year;
         string seriesName;
         string[] tags;
-        uint copies;
         bool isAvailable;
         uint ID;
     }
+
+    struct BarrowItem{
+        Item item;
+        bool isbarrowed;
+    }
+
     enum Category{fiction, nonfiction, others, references}
     enum MediaType{Books, NewsClippings, Publications, Software, Thesis}
 
     uint256 public itemId;
-    address public owner;
+    // address public owner;
 
-    mapping(MediaType =>  Item[]) public sortByMediaType; //improve
+    mapping(MediaType =>  Item[]) public sortByMediaType;
     mapping(MediaType => uint) public mediaTypeCount;
 
     mapping(uint => mapping(uint => Item)) public filter;
     mapping(uint => uint) public filterCount;
 
+    mapping(uint => uint) public specificItemListCount;
+
     mapping(uint => Item) public itemList;
+
+    //---------------------------------Barrowed Items------------------------------------------
+
+    mapping(address => mapping(uint => BarrowItem)) public memberItemList;
+    mapping(address => uint) internal memberItemListCount;
+
+    mapping(uint => mapping(uint => address))public whoBarrowedList;
+    mapping(uint => uint) public barrowedItemCount;
+
+    //---------------------------------Account------------------------------------------
+    mapping(address => bool) public isAdmin;
     
     constructor()  {
-        owner = msg.sender;
+        // owner = msg.sender;
+        isAdmin[0x5B38Da6a701c568545dCfcB03FcB875f56beddC4] = true;
         itemId = 1;
     }
 
     function search(uint _filter, string memory _content) public view returns(Item[] memory){
-        Item[] memory list =  new Item[](itemId);
+        Item[] memory list =  new Item[](filterCount[_filter]);
+
+        uint resultIndex = 0; // Track the index in the results array
 
         if(_filter == 1){
             //title
             for(uint i = 0; i < itemId; i++){
                 if(keccak256(abi.encodePacked(filter[_filter][filterCount[i]].title)) == keccak256(abi.encodePacked(_content))){
                     Item memory currentItem = filter[_filter][filterCount[i]];
-                    list[i] = currentItem;
+                    list[resultIndex] = currentItem;
                 }
             }
         }else if(_filter == 2){
@@ -54,7 +75,7 @@ contract Library{
             for(uint i = 0; i < itemId; i++){
                 if(keccak256(abi.encodePacked(filter[_filter][filterCount[i]].publisher)) == keccak256(abi.encodePacked(_content))){
                     Item memory currentItem = filter[_filter][filterCount[i]];
-                    list[i] = currentItem;
+                    list[resultIndex] = currentItem;
                 }
             }
         }else if(_filter == 3){
@@ -62,7 +83,7 @@ contract Library{
             for(uint i = 0; i < itemId; i++){
                 if(keccak256(abi.encodePacked(filter[_filter][filterCount[i]].seriesName)) == keccak256(abi.encodePacked(_content))){
                     Item memory currentItem = filter[_filter][filterCount[i]];
-                    list[i] = currentItem;
+                    list[resultIndex] = currentItem;
                 }
             }
         }else if(_filter == 4){
@@ -71,7 +92,7 @@ contract Library{
                 for(uint j = 0; j < filter[_filter][filterCount[i]].tags.length; j++){
                     if(keccak256(abi.encodePacked(filter[_filter][filterCount[i]].tags[j])) == keccak256(abi.encodePacked(_content))){
                         Item memory currentItem = filter[_filter][filterCount[i]];
-                        list[i] = currentItem;
+                        list[resultIndex] = currentItem;
                     }
                 }
                 
@@ -82,7 +103,6 @@ contract Library{
 
         return list;
     }
-
 
     function sort(MediaType _mediaType) public view returns (Item[] memory){
         return sortByMediaType[_mediaType];
@@ -96,5 +116,9 @@ contract Library{
             list[i] = currentItem;
         }
         return list;
+    }
+
+    function getRole() view public returns(string memory){
+        return (isAdmin[msg.sender])? "admin": "member";
     }
 }

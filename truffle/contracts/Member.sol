@@ -2,34 +2,28 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "./Account.sol";
+import "./Library.sol";
 
-contract Member is Account{
-
-    struct barrowItem{
-        Item item;
-        bool isReturned;
-    }
+contract Member is Library{
     
-
-    mapping(address => mapping(uint => barrowItem)) internal memberBorrowedList;
-    mapping(address => uint) internal borrowedListCount; 
-    
-    function memeberBorrowHistory() internal view returns(barrowItem[] memory){
-        barrowItem[] memory list = new barrowItem[](borrowedListCount[msg.sender]);
+    function memeberBorrowHistory() internal view returns(BarrowItem[] memory){
+        BarrowItem[] memory list = new BarrowItem[](memberItemListCount[msg.sender]);
       
-        for(uint i = 0; i < borrowedListCount[msg.sender]; i++){
-            barrowItem memory currentBorrow =  memberBorrowedList[msg.sender][i];
+        for(uint i = 0; i < memberItemListCount[msg.sender]; i++){
+            BarrowItem memory currentBorrow =  memberItemList[msg.sender][i];
             list[i] = currentBorrow;
         }
         return list;
     }
+    
     function borrow(uint _itemID) internal {
-        memberBorrowedList[owner][borrowedListCount[owner]] = barrowItem(itemList[_itemID], false);
-        borrowedListCount[owner]++;
-        itemList[_itemID].copies--;
-
-        memberItemList[_itemID][memberItemListCount[_itemID]] = memberList[owner];
-        memberItemListCount[_itemID]++;
+        //records what specific Item this current member is barrowing
+        memberItemList[msg.sender][memberItemListCount[msg.sender]] = BarrowItem(itemList[_itemID], false);
+        //increment the number of Item the current member barrowed
+        memberItemListCount[msg.sender]++;
+        //reduce the specific Item availability count
+        specificItemListCount[_itemID]--;
+        //record each member who barrowed this specific Item
+        whoBarrowedList[_itemID][barrowedItemCount[_itemID]] = msg.sender;
     }
 }
