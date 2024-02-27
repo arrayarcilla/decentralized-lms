@@ -1,35 +1,41 @@
 import React from "react";
-import { Form, Button, FormInput, Header, Image, Grid, GridRow, GridColumn } from "semantic-ui-react";
+import { Link } from 'react-router-dom';
 
-const LoginForm = () => (
+import { Form, Button, Header, Image, Grid, GridRow, GridColumn, Divider } from "semantic-ui-react";
 
-    <Grid columns={2} centered container>
+const RegisterForm = () => (
+
+    <Grid container>
+        <GridRow centered>
+            <GridColumn textAlign="center" width={8}>
+                <Header as="h1">SandL Library</Header>
+            </GridColumn>
+        </GridRow>
+
+        <Divider width={1}/>
+
+        <GridRow centered>
+            <GridColumn textAlign="left" width={8}>
+            <p>To start using SandL, make sure you have the MetaMask browser extension installed. Connect your MetaMask wallet by clicking the 'Connect MetaMask' button below. </p>
+            </GridColumn>
+        </GridRow>
+
+        <Divider />
+        
         <GridRow>
-            <GridColumn  width={2}>
-            </GridColumn>
-            <GridColumn textAlign="left">
-                <Header as="h2">User Login</Header>
-            </GridColumn>
         </GridRow>
         <GridRow centered>
-            <GridColumn width={2}>
-                <Image src="logo.png" size="small"/>
+            <GridColumn width={3}>
+                <Image src="logo.png" size="small" floated="right"/>
             </GridColumn>
-            <GridColumn>
+            <GridColumn width={4} verticalAlign="middle">
                 <Form>
-                    <FormInput icon="user" iconPosition="left" label="Username" placeholder="Username" width={9}/>
-                    <FormInput icon="lock" iconPosition="left" label="Password" type="password" width={9}/>
-                    <Grid columns={2}>
-                        <GridRow>
-                            <GridColumn width={5}><Button type="submit">Login</Button></GridColumn>
-                            <GridColumn><a href="#">Forgot password?</a></GridColumn>
-                        </GridRow>
-                    </Grid>    
+                    <Link to='/dashboard'><Button type="submit" content='Connect MetaMask' size='big' /></Link>
                 </Form>
             </GridColumn>
-        </GridRow>
+        </GridRow>  
     </Grid>
     
 )
 
-export default LoginForm
+export default RegisterForm;
