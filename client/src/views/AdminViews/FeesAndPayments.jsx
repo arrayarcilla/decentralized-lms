@@ -1,12 +1,12 @@
 import React from 'react';
 
-import SideBar from '../components/Sidebar';
+import SideBar from '../../components/Sidebar';
 
 function FeesAndPayments() {
 	return (
 		<>
 			<SideBar />
-			<div class='content'>
+			<div className='admin-page-content'>
 				<h1>FeesAndPayments Page</h1>
 			</div>
 		</>

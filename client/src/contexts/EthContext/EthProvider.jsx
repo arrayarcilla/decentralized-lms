@@ -11,10 +11,10 @@ function EthProvider({ children }) {
       console.log("this is the accesslevel: ", accessLevel);
       let contract, artifact;
       if (accessLevel === "admin") {
-        artifact = require("../../contracts/Member.json");
+        // artifact = require("../../contracts/Admin.json");
         contract = new web3.eth.Contract(artifact.abi, artifact.networks[networkID].address);
       } else if (accessLevel === "member") {
-        artifact = require("../../contracts/Admin.json");
+        // artifact = require("../../contracts/Member.json");
         contract = new web3.eth.Contract(artifact.abi, artifact.networks[networkID].address);
       }
       dispatch({

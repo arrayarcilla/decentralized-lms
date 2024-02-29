@@ -1,11 +1,9 @@
 //--- Important Imports
-// import { EthProvider } from "../contexts/EthContext";
 import React from "react";
 import { Link } from 'react-router-dom';
 
 //--- Other Imports
 import {
-    SidebarPusher,
     MenuItem,
     Icon,
     Menu,
@@ -17,7 +15,7 @@ import {
 
 function SideBar() {
     return (
-        <>
+        <div class="sidebar-content">
 					<Sidebar
 							as={Menu}
 							icon="labeled"
@@ -33,6 +31,7 @@ function SideBar() {
 								Dashboard
 							</MenuItem>
 						</Link>
+						
 						<Popup
 							content={
 								<Menu vertical>
@@ -120,7 +119,7 @@ function SideBar() {
 							Procurements
 						</MenuItem>
 					</Sidebar>  
-        </>
+        </div>
     );
 }
 

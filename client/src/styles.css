@@ -159,13 +159,24 @@ hr {
   margin-top: -1em;
 }
 
-.content {
-  margin-top: 3em;
-  margin-right: 3em;
-  margin-left: 15em
+.admin-page-content {
+  margin: 3em 3em 0 15em;
+}
+
+.member-page-content {
+  margin: 3em 3em 3em 3em;
 }
 
 .landing-content {
   margin-top: 5em;
   margin-bottom: 5em;
+}
+
+.menu-content {
+  margin: auto;
+  padding: 2em 0;
+}
+
+.responsive-text {
+  font-size: calc(1vw + 12px);
 }

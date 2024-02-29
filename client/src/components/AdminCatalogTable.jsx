@@ -8,7 +8,7 @@ import {
     TableRow
 } from 'semantic-ui-react';
 
-function CatalogTable() {
+function AdminCatalogTable() {
     return (
 			<>
 				<h1>Catalog table</h1>
@@ -48,4 +48,4 @@ function CatalogTable() {
     );
 }
 
-export default CatalogTable;
+export default AdminCatalogTable;
