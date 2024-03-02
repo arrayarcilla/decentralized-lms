@@ -53,7 +53,7 @@ contract Library{
     
     constructor()  {
         // owner = msg.sender;
-        isAdmin[0xE64E30E8Fd16e1b3Ff71b2A277898a2925BdEBA0] = true;
+        isAdmin[0xbB6d028DC58cd9D111a6D45368a30e06806f5c86] = true;
         itemId = 1;
     }
 
@@ -112,7 +112,7 @@ contract Library{
         Item[] memory list =  new Item[](itemId);
 
         for(uint i = 0; i < itemId; i++){
-            Item memory currentItem = itemList[i];
+            Item memory currentItem = itemList[i+1];
             list[i] = currentItem;
         }
         return list;

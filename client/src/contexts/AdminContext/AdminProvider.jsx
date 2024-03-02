@@ -3,7 +3,7 @@ import AdminContext from "./AdminContext";
 import useAdmin from "./useAdmin";
 import { reducer, actions, initialState } from "./state";
 
-function EthProvider({ children, value }) {
+function AdminProvider({ children, value }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { state: { web3, accounts, networkID } } = useAdmin();
   console.log(value);
@@ -61,4 +61,4 @@ function EthProvider({ children, value }) {
   );
 }
 
-export default EthProvider;
+export default AdminProvider;

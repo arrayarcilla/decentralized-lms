@@ -6,7 +6,7 @@ import "./Library.sol";
 
 contract Member is Library{
     
-    function memeberBorrowHistory() internal view returns(BarrowItem[] memory){
+    function memeberBorrowHistory() public view returns(BarrowItem[] memory){
         BarrowItem[] memory list = new BarrowItem[](memberItemListCount[msg.sender]);
       
         for(uint i = 0; i < memberItemListCount[msg.sender]; i++){
@@ -16,7 +16,7 @@ contract Member is Library{
         return list;
     }
     
-    function borrow(uint _itemID) internal {
+    function borrow(uint _itemID) public {
         //records what specific Item this current member is barrowing
         memberItemList[msg.sender][memberItemListCount[msg.sender]] = BarrowItem(itemList[_itemID], false);
         //increment the number of Item the current member barrowed
@@ -25,5 +25,9 @@ contract Member is Library{
         specificItemListCount[_itemID]--;
         //record each member who barrowed this specific Item
         whoBarrowedList[_itemID][barrowedItemCount[_itemID]] = msg.sender;
+    }
+
+    function practice()pure public returns(bool){
+        return true;
     }
 }

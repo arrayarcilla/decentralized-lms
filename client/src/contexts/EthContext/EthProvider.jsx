@@ -11,10 +11,10 @@ function EthProvider({ children }) {
       console.log("this is the accesslevel: ", accessLevel);
       let contract, artifact;
       if (accessLevel === "admin") {
-        artifact = require("../../contracts/Member.json");
+        artifact = require("../../contracts/Admin.json");
         contract = new web3.eth.Contract(artifact.abi, artifact.networks[networkID].address);
       } else if (accessLevel === "member") {
-        artifact = require("../../contracts/Admin.json");
+        artifact = require("../../contracts/Member.json");
         contract = new web3.eth.Contract(artifact.abi, artifact.networks[networkID].address);
       }
       dispatch({
@@ -25,7 +25,7 @@ function EthProvider({ children }) {
     [] // empty dependency array to avoid unnecessary re-initializations
   );
   
-  const tryInit = async () => {
+  const tryInit = useCallback(async () => {
     try {
       const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
       const networkID = await web3.eth.net.getId();
@@ -47,13 +47,11 @@ function EthProvider({ children }) {
           console.error("Invalid user role");
           break;
       }
-
-      // Pass accessLevel directly to init function, avoiding state dependence
       await init(accessLevel, web3, networkID, accounts);
     } catch (err) {
       console.error(err);
     }
-  };
+  },[]);
 
   useEffect(() => {
     
@@ -71,7 +69,7 @@ function EthProvider({ children }) {
     return () => {
       events.forEach(e => window.ethereum.removeListener(e, handleChange));
     };
-  }, [init]);
+  }, [tryInit]);
 
   return (
     <EthContext.Provider value={{
