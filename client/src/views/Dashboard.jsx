@@ -4,12 +4,12 @@ import Sidebar from '../components/Sidebar';
 import useEth from "../contexts/EthContext/useEth";
 
 function Dashboard() {
-    const { state } = useEth();
+    const { state: { contract, accounts } } = useEth();
     const [items, setItems] = useState([[]]);
 
     const read = async () => {
         try{
-            const newValue = await state.contract.methods.read().call({ from: state.accounts[0] });
+            const newValue = await contract.methods.read().call({ from: accounts[0] });
             console.log("this is the read value:", newValue);
             setItems(newValue);
         }catch{
@@ -21,7 +21,7 @@ function Dashboard() {
     const handleDelete = async (id)=> {
         try{
             console.log(id);
-            await state.contract.methods.deleteItem(id).send({ from: state.accounts[0] });
+            await contract.methods.deleteItem(id).send({ from: accounts[0] });
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -34,7 +34,7 @@ function Dashboard() {
     const addItem = async (e) => {
         e.preventDefault(); 
         try{
-            await state.contract.methods.addItem(
+            await contract.methods.addItem(
                 e.target[0].value, 
                 e.target[1].value, 
                 e.target[2].value, 
@@ -46,7 +46,7 @@ function Dashboard() {
                 ["romance", "comedy"],
                 e.target[9].value, 
                 true)
-                .send({ from: state.accounts[0] });
+                .send({ from: accounts[0] });
           }catch(err){
             console.log(err);
           }
