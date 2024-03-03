@@ -5,27 +5,30 @@ import useEth from "../contexts/EthContext/useEth";
 
 function Dashboard() {
     const { state } = useEth();
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState([[]]);
 
     const read = async () => {
         try{
             const newValue = await state.contract.methods.read().call({ from: state.accounts[0] });
-            console.log("this is the user role:", newValue);
-            setItems(newValue[1]);
+            console.log("this is the read value:", newValue);
+            setItems(newValue);
         }catch{
             console.log("error");
         }
         
     }
 
-    const handleDelete = async (e)=> {
+    const handleDelete = async (id)=> {
         try{
-            console.log(e.target.value);
-            await state.contract.methods.deleteItem().send({ from: state.accounts[0] });
-        }catch{
-            console.log(e);
+            console.log(id);
+            await state.contract.methods.deleteItem(id).send({ from: state.accounts[0] });
+        } catch (error) {
+            console.error('An error occurred:', error);
         }
+    }
 
+    const handleEdit = async (e) => {
+        console.log("this is the edit area", e.target.value);
     }
 
     const addItem = async (e) => {
@@ -52,7 +55,7 @@ function Dashboard() {
     return (
         <>
             <Sidebar />
-            <div class='content'>
+            <div className='content'>
                 <h1>Dashboard page</h1>
                 <form onSubmit={addItem}>
                     <label htmlFor="">MediaType</label>
@@ -79,12 +82,34 @@ function Dashboard() {
                 </form>
 
                 <button onClick={read}>read</button>
-                {items.map((item, idx) => (
-                    <li key={items[11]}> 
-                        {item}
-                    </li>
-                ))}
-                <button onClick={() => handleDelete(items.ID)}>Delete</button>
+                <ul>
+                    {items.map((book, idx) => (
+                        <li key={book.ID}> 
+                            <h5>this is book ID num: {book.ID}</h5>
+                            <label>{book.title}</label>
+                            <form onSubmit={handleEdit}>
+                                <label htmlFor="">Category</label>
+                                <input type="number" /><br/>
+                                <label htmlFor="">Series Name</label>
+                                <input type="text" /><br/>
+                                <label htmlFor="">tags</label>
+                                <input type="text" /><br/>
+                                <label htmlFor="">copies</label>
+                                <input type="number" /><br/>
+                                <button type="submit">Edit</button>
+                            </form>
+                            <button onClick={() => handleDelete(book.ID)}>Delete</button>
+                            <ul>
+                                {book.map((attribute) => (
+                                    <li key={attribute}> 
+                                        {attribute}
+                                    </li>
+                                ))}
+                                <br/>
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </>
     );

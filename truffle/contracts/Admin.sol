@@ -28,7 +28,7 @@ contract Admin is Library{
     }
     
 
-    function deleteItem(uint _ID) private onlyAdmin{
+    function deleteItem(uint _ID) public onlyAdmin{
         itemList[_ID].isAvailable = false;
     }
 

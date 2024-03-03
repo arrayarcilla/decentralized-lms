@@ -111,9 +111,9 @@ contract Library{
     function read() public view returns(Item[] memory){
         Item[] memory list =  new Item[](itemId);
 
-        for(uint i = 0; i < itemId; i++){
-            Item memory currentItem = itemList[i+1];
-            list[i] = currentItem;
+        for(uint i = 1; i < itemId; i++){
+            Item memory currentItem = itemList[i];
+            list[i-1] = currentItem;
         }
         return list;
     }
