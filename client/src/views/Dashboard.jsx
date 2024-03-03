@@ -27,8 +27,14 @@ function Dashboard() {
         }
     }
 
-    const handleEdit = async (e) => {
-        console.log("this is the edit area", e.target.value);
+    const editItem = async (id, catergory, seriesName, tags, copies, isAvailable) => {
+        try{
+            await contract.methods.editItem(id,  catergory, seriesName, tags, copies, isAvailable).send({ from: accounts[0] });
+            console.log("this is the edit area", e.target.value);
+          }catch(err){
+            console.log(err);
+          }
+
     }
 
     const addItem = async (e) => {
