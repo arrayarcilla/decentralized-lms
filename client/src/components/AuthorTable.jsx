@@ -6,7 +6,7 @@ import {
     Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow
 } from 'semantic-ui-react';
 
-function AdminCatalogTable() {
+function AuthorTable() {
     return (
 			<>
 				<Table singleLine>
@@ -14,24 +14,14 @@ function AdminCatalogTable() {
 					<TableHeader>
 						<TableRow>
 							<TableHeaderCell>Id</TableHeaderCell>
-							<TableHeaderCell>Title</TableHeaderCell>
-							<TableHeaderCell>Type</TableHeaderCell>
-							<TableHeaderCell>Authors</TableHeaderCell>
-							<TableHeaderCell>Publisher</TableHeaderCell>
-							<TableHeaderCell>Identifiers</TableHeaderCell>
-							<TableHeaderCell>Call No.</TableHeaderCell>
-							<TableHeaderCell>Copies</TableHeaderCell>
+							<TableHeaderCell>Name</TableHeaderCell>
+							<TableHeaderCell>Country</TableHeaderCell>
 							<TableHeaderCell>Actions</TableHeaderCell>
 						</TableRow>
 					</TableHeader>
 
 					<TableBody>
 						<TableRow>
-							<TableCell></TableCell>
-							<TableCell></TableCell>
-							<TableCell></TableCell>
-							<TableCell></TableCell>
-							<TableCell></TableCell>
 							<TableCell></TableCell>
 							<TableCell></TableCell>
 							<TableCell></TableCell>
@@ -44,4 +34,4 @@ function AdminCatalogTable() {
     );
 }
 
-export default AdminCatalogTable;
+export default AuthorTable;

@@ -9,6 +9,7 @@ import LandingPage from './views/AdminViews/LandingPage';
 
 import Dashboard from './views/AdminViews/Dashboard';
 import Catalog from './views/AdminViews/Catalog';
+import AddItem from './views/AdminViews/AddItem';
 import Categories from './views/AdminViews/Categories';
 import Authors from './views/AdminViews/Authors';
 import Publishers from './views/AdminViews/Publishers';
@@ -40,6 +41,7 @@ function App() {
 
 					<Route path='/dashboard' element={<Dashboard />} />
 					<Route path='/catalog' element={<Catalog />} />
+					<Route path='/add-item' element={<AddItem />} />
 					<Route path='/categories' element={<Categories />} />
 					<Route path='/authors' element={<Authors />} />
 					<Route path='/publishers' element={<Publishers />} />

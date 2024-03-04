@@ -6,7 +6,16 @@ import MenuBar from '../../components/Menubar';
 import MemberCatalogTable from '../../components/MemberCatalogTable';
 
 //--- Other Imports
-import { Segment, Container, GridRow, GridColumn, Grid, List, ListItem, HeaderContent, Header, FormInput, FormSelect, Form, Icon, Image, Button } from 'semantic-ui-react';
+import { 
+    Segment, 
+    Container, 
+    Grid, GridRow, GridColumn, 
+    List, ListItem,
+    Header, HeaderContent,
+    Form, FormInput, FormSelect,
+    Icon,
+    Image,
+    Button } from 'semantic-ui-react';
 
 function MemberCatalog() {
     return (
