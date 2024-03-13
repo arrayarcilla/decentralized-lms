@@ -24,6 +24,7 @@ contract Library {
         string username; // Username of the borrower
         uint itemId;
         uint borrowTimestamp;
+        bool returned;
     }
 
     enum Category { fiction, nonfiction, others, references }
@@ -57,16 +58,15 @@ contract Library {
         borrowRecordId = 1;
         adminCount = 0;
         memberCount = 0;
-        
-        // Initialize admins
-        isAdmin[0xA74EC9907ce644498ed71cffDd157530441D151D] = true;
     }
 
     modifier onlyAdmin() {
         require(isAdmin[msg.sender], "Only admin can perform this operation");
         _;
     }
-//-----------------------------------------------------ADMIN--------------------------------------------------------------
+
+//----------------------------------------------------------ADMIN------------------------------------------------------------------
+
     // Function to add an item to the library
     function addItem(
         MediaType _mediaType,
@@ -135,7 +135,25 @@ contract Library {
         emit ItemDeleted(_itemId);
     }
 
-//-----------------------------------------------------MEMBER--------------------------------------------------------------
+    // Function to get list of members who borrowed the item
+    function getBorrowers(uint _itemId) public view returns (BorrowRecord[] memory) {
+        uint count = 0;
+        for (uint i = 1; i < borrowRecordId; i++) {
+            if (borrowRecords[i].itemId == _itemId) {
+                count++;
+            }
+        }
+        BorrowRecord[] memory borrowers = new BorrowRecord[](count);
+        uint index = 0;
+        for (uint i = 1; i < borrowRecordId; i++) {
+            if (borrowRecords[i].itemId == _itemId) {
+                borrowers[index++] = borrowRecords[i];
+            }
+        }
+        return borrowers;
+    }
+
+//----------------------------------------------------------MEMBER------------------------------------------------------------------
 
     // Function to borrow an item by its ID
     function borrowItem(uint _itemId) public {
@@ -151,7 +169,7 @@ contract Library {
         items[_itemId].copies--;
 
         // Record the borrowing including username
-        borrowRecords[borrowRecordId] = BorrowRecord(usernames[msg.sender], _itemId, block.timestamp);
+        borrowRecords[borrowRecordId] = BorrowRecord(usernames[msg.sender], _itemId, block.timestamp, false);
         emit ItemBorrowed(usernames[msg.sender], _itemId, block.timestamp);
         borrowRecordId++;
 
@@ -181,31 +199,37 @@ contract Library {
         // Mark the item as available
         items[_itemId].isAvailable = true;
 
+        // Mark the item as returned
+        for (uint i = 1; i < borrowRecordId; i++) {
+            if (borrowRecords[i].itemId == _itemId && keccak256(bytes(borrowRecords[i].username)) == keccak256(bytes(usernames[msg.sender])) && !borrowRecords[i].returned) {
+                borrowRecords[i].returned = true;
+                break;
+            }
+        }
+
         // Emit event for item return
         emit ItemReturned(usernames[msg.sender], _itemId);
     }
 
-    // Function to get all books borrowed by a member
-    function getBorrowedBooksByMember(address _member) public view returns (Item[] memory) {
+    // Function to get all items borrowed by the sender
+    function getMyBorrowedItems() public view returns (BorrowRecord[] memory) {
         uint count = 0;
         for (uint i = 1; i < borrowRecordId; i++) {
-            if (borrowRecords[i].borrower == _member) {
+            if (keccak256(bytes(borrowRecords[i].username)) == keccak256(bytes(usernames[msg.sender]))) {
                 count++;
             }
         }
-
-        Item[] memory borrowedBooks = new Item[](count);
+        BorrowRecord[] memory borrowedItems = new BorrowRecord[](count);
         uint index = 0;
         for (uint i = 1; i < borrowRecordId; i++) {
-            if (borrowRecords[i].borrower == _member) {
-                borrowedBooks[index++] = items[borrowRecords[i].itemId];
+            if (keccak256(bytes(borrowRecords[i].username)) == keccak256(bytes(usernames[msg.sender]))) {
+                borrowedItems[index++] = borrowRecords[i];
             }
         }
-
-        return borrowedBooks;
+        return borrowedItems;
     }
 
-//-----------------------------------------------------LIBRARY--------------------------------------------------------------
+//----------------------------------------------------LIBRARY-----------------------------------------------------
 
     // Function to set username for the sender
     function setUsername() public {
@@ -265,7 +289,6 @@ contract Library {
                 count++;
             }
         }
-
         Item[] memory searchResults = new Item[](count);
         uint256 index = 0;
         for (uint256 i = 1; i < itemId; i++) {
@@ -277,23 +300,18 @@ contract Library {
                 searchResults[index++] = items[i];
             }
         }
-
         return searchResults;
     }
 
-    // Function to check if a string contains a substring
-    function containsSubstring(string memory _string, string memory _substring) private pure returns (bool) {
-        bytes memory stringBytes = bytes(_string);
-        bytes memory substringBytes = bytes(_substring);
-
-        if (stringBytes.length < substringBytes.length) {
-            return false;
-        }
-
-        for (uint256 i = 0; i <= stringBytes.length - substringBytes.length; i++) {
+    // Function to check if a string contains a substring (case insensitive)
+    function containsSubstring(string memory _str, string memory _substr) internal pure returns (bool) {
+        bytes memory strBytes = bytes(_str);
+        bytes memory substrBytes = bytes(_substr);
+        uint256 j;
+        for (uint256 i = 0; i < strBytes.length - substrBytes.length + 1; i++) {
             bool found = true;
-            for (uint256 j = 0; j < substringBytes.length; j++) {
-                if (stringBytes[i + j] != substringBytes[j]) {
+            for (j = 0; j < substrBytes.length; j++) {
+                if (bytesToLower(strBytes[i + j]) != bytesToLower(substrBytes[j])) {
                     found = false;
                     break;
                 }
@@ -305,13 +323,11 @@ contract Library {
         return false;
     }
 
-    // Function to get items by media type
-    function getItemsByMediaType(MediaType _mediaType) public view returns (Item[] memory) {
-        return sortByMediaType[_mediaType];
-    }
-
-    // Function to get the role of the user (admin or member)
-    function getUserRole() public view returns (string memory) {
-        return isAdmin[msg.sender] ? "admin" : "member";
+    // Function to convert bytes to lowercase
+    function bytesToLower(bytes1 _b) internal pure returns (bytes1) {
+        if (_b >= 0x41 && _b <= 0x5A) {
+            return bytes1(uint8(_b) + 32);
+        }
+        return _b;
     }
 }
