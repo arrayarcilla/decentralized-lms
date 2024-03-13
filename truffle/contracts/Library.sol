@@ -21,7 +21,7 @@ contract Library {
     }
 
     struct BorrowRecord {
-        address borrower;
+        string username; // Username of the borrower
         uint itemId;
         uint borrowTimestamp;
     }
@@ -34,16 +34,29 @@ contract Library {
     mapping(MediaType => Item[]) public sortByMediaType;
     mapping(MediaType => uint256) public mediaTypeCount;
     mapping(address => bool) public isAdmin;
+    mapping(address => string) public usernames;
+    mapping(address => bool) public adminLogged;
+    mapping(address => uint) public adminOrder;
+    mapping(address => bool) public memberLogged;
+    mapping(address => uint) public memberOrder;
     mapping(uint => BorrowRecord) public borrowRecords;
     uint public borrowRecordId;
+    uint public adminCount;
+    uint public memberCount;
+
+    // Define events
+    event ItemAdded(uint itemId);
+    event ItemEdited(uint itemId);
+    event ItemDeleted(uint itemId);
+    event ItemBorrowed(string username, uint itemId, uint borrowTimestamp);
+    event ItemReturned(string username, uint itemId);
 
     constructor() {
         // Initialize itemId to 1
         itemId = 1;
         borrowRecordId = 1;
-
-        // Initialize admins
-        isAdmin[0xA74EC9907ce644498ed71cffDd157530441D151D] = true;
+        adminCount = 0;
+        memberCount = 0;
     }
 
     modifier onlyAdmin() {
@@ -79,6 +92,8 @@ contract Library {
 
         sortByMediaType[_mediaType].push(newItem);
         mediaTypeCount[_mediaType]++;
+
+        emit ItemAdded(itemId - 1);
     }
 
     // Function to edit an existing item in the library
@@ -104,6 +119,8 @@ contract Library {
         item.publisher = _publisher;
         item.isAvailable = _isAvailable;
         item.copies = _copies;
+
+        emit ItemEdited(_itemId);
     }
 
     // Function to soft delete an item (set isAvailable to false)
@@ -111,6 +128,8 @@ contract Library {
         require(_itemId > 0 && _itemId < itemId, "Invalid item ID");
 
         items[_itemId].isAvailable = false;
+
+        emit ItemDeleted(_itemId);
     }
 
 //-----------------------------------------------------MEMBER--------------------------------------------------------------
@@ -128,8 +147,9 @@ contract Library {
         // Decrement the count of available copies
         items[_itemId].copies--;
 
-        // Record the borrowing
-        borrowRecords[borrowRecordId] = BorrowRecord(msg.sender, _itemId, block.timestamp);
+        // Record the borrowing including username
+        borrowRecords[borrowRecordId] = BorrowRecord(usernames[msg.sender], _itemId, block.timestamp);
+        emit ItemBorrowed(usernames[msg.sender], _itemId, block.timestamp);
         borrowRecordId++;
 
         // If there are no more copies available, mark the item as unavailable
@@ -138,26 +158,66 @@ contract Library {
         }
     }
 
-    // Function to get all books borrowed by a member
-    function getBorrowedBooksByMember(address _member) public view returns (Item[] memory) {
-        uint count = 0;
+    // Function to return an item by its ID
+    function returnItem(uint _itemId) public {
+        require(_itemId > 0 && _itemId < itemId, "Invalid item ID");
+
+        // Check if the item is borrowed
+        bool found = false;
         for (uint i = 1; i < borrowRecordId; i++) {
-            if (borrowRecords[i].borrower == _member) {
-                count++;
+            if (borrowRecords[i].itemId == _itemId && keccak256(bytes(borrowRecords[i].username)) == keccak256(bytes(usernames[msg.sender]))) {
+                found = true;
+                break;
             }
         }
+        require(found, "Item is not borrowed by the sender");
 
-        Item[] memory borrowedBooks = new Item[](count);
-        uint index = 0;
-        for (uint i = 1; i < borrowRecordId; i++) {
-            if (borrowRecords[i].borrower == _member) {
-                borrowedBooks[index++] = items[borrowRecords[i].itemId];
-            }
-        }
+        // Increment the count of available copies
+        items[_itemId].copies++;
 
-        return borrowedBooks;
+        // Mark the item as available
+        items[_itemId].isAvailable = true;
+
+        // Emit event for item return
+        emit ItemReturned(usernames[msg.sender], _itemId);
     }
-//-----------------------------------------------------ALL--------------------------------------------------------------
+
+//-----------------------------------------------------LIBRARY--------------------------------------------------------------
+
+    // Function to set username for the sender
+    function setUsername() public {
+        require(bytes(usernames[msg.sender]).length == 0, "Username already set");
+        if (isAdmin[msg.sender]) {
+            require(adminLogged[msg.sender], "Only admins can set their username");
+            adminCount++;
+            usernames[msg.sender] = string(abi.encodePacked("admin", adminCount));
+        } else {
+            require(memberLogged[msg.sender], "Only members can set their username");
+            memberCount++;
+            usernames[msg.sender] = string(abi.encodePacked("member", memberCount));
+        }
+    }
+
+    // Function to read username of the sender
+    function getUsername(address _user) public view returns (string memory) {
+        return usernames[_user];
+    }
+
+    // Function to log admin in
+    function loginAdmin() public {
+        require(isAdmin[msg.sender], "Only admin can log in");
+        require(!adminLogged[msg.sender], "Admin already logged in");
+
+        adminLogged[msg.sender] = true;
+    }
+
+    // Function to log member in
+    function loginMember() public {
+        require(!isAdmin[msg.sender], "Members cannot log in as admin");
+        require(!memberLogged[msg.sender], "Member already logged in");
+
+        memberLogged[msg.sender] = true;
+    }
 
     // Function to read all items added to the library
     function readAllItems() public view returns (Item[] memory) {
