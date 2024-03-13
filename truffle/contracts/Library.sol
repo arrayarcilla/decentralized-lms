@@ -57,6 +57,9 @@ contract Library {
         borrowRecordId = 1;
         adminCount = 0;
         memberCount = 0;
+        
+        // Initialize admins
+        isAdmin[0xA74EC9907ce644498ed71cffDd157530441D151D] = true;
     }
 
     modifier onlyAdmin() {
@@ -180,6 +183,26 @@ contract Library {
 
         // Emit event for item return
         emit ItemReturned(usernames[msg.sender], _itemId);
+    }
+
+    // Function to get all books borrowed by a member
+    function getBorrowedBooksByMember(address _member) public view returns (Item[] memory) {
+        uint count = 0;
+        for (uint i = 1; i < borrowRecordId; i++) {
+            if (borrowRecords[i].borrower == _member) {
+                count++;
+            }
+        }
+
+        Item[] memory borrowedBooks = new Item[](count);
+        uint index = 0;
+        for (uint i = 1; i < borrowRecordId; i++) {
+            if (borrowRecords[i].borrower == _member) {
+                borrowedBooks[index++] = items[borrowRecords[i].itemId];
+            }
+        }
+
+        return borrowedBooks;
     }
 
 //-----------------------------------------------------LIBRARY--------------------------------------------------------------
