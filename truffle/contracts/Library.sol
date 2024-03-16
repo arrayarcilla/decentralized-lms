@@ -22,8 +22,8 @@ contract Library {
 
     struct BorrowRecord {
         string username; // Username of the borrower
+        string title;    // Title of the borrowed item
         uint itemId;
-        uint borrowTimestamp;
         bool returned;
     }
 
@@ -31,6 +31,10 @@ contract Library {
     enum MediaType { Books, NewsClippings, Publications, Software, Thesis }
 
     uint256 public itemId;
+    uint public borrowRecordId;
+    uint public adminCount;
+    uint public memberCount;
+    
     mapping(uint256 => Item) public items;
     mapping(MediaType => Item[]) public sortByMediaType;
     mapping(MediaType => uint256) public mediaTypeCount;
@@ -41,16 +45,13 @@ contract Library {
     mapping(address => bool) public memberLogged;
     mapping(address => uint) public memberOrder;
     mapping(uint => BorrowRecord) public borrowRecords;
-    uint public borrowRecordId;
-    uint public adminCount;
-    uint public memberCount;
 
     // Define events
     event ItemAdded(uint itemId);
     event ItemEdited(uint itemId);
     event ItemDeleted(uint itemId);
-    event ItemBorrowed(string username, uint itemId, uint borrowTimestamp);
-    event ItemReturned(string username, uint itemId);
+    event ItemBorrowed(string username, string title);
+    event ItemReturned(string username, string title);
 
     constructor() {
         // Initialize itemId to 1
@@ -58,6 +59,8 @@ contract Library {
         borrowRecordId = 1;
         adminCount = 0;
         memberCount = 0;
+
+        isAdmin[0x2665Bcb5bBF409f538B7631e2FD85AA09B200faC] = true;
     }
 
     modifier onlyAdmin() {
@@ -169,8 +172,8 @@ contract Library {
         items[_itemId].copies--;
 
         // Record the borrowing including username
-        borrowRecords[borrowRecordId] = BorrowRecord(usernames[msg.sender], _itemId, block.timestamp, false);
-        emit ItemBorrowed(usernames[msg.sender], _itemId, block.timestamp);
+        borrowRecords[borrowRecordId] = BorrowRecord(usernames[msg.sender], items[_itemId].title, _itemId, false);
+        emit ItemBorrowed(usernames[msg.sender], items[_itemId].title);
         borrowRecordId++;
 
         // If there are no more copies available, mark the item as unavailable
@@ -208,7 +211,7 @@ contract Library {
         }
 
         // Emit event for item return
-        emit ItemReturned(usernames[msg.sender], _itemId);
+        emit ItemReturned(usernames[msg.sender], items[_itemId].title);
     }
 
     // Function to get all items borrowed by the sender
@@ -231,7 +234,6 @@ contract Library {
 
 //----------------------------------------------------LIBRARY-----------------------------------------------------
 
-    // Function to set username for the sender
     function setUsername() public {
         require(bytes(usernames[msg.sender]).length == 0, "Username already set");
         if (isAdmin[msg.sender]) {
@@ -239,10 +241,30 @@ contract Library {
             adminCount++;
             usernames[msg.sender] = string(abi.encodePacked("admin", adminCount));
         } else {
-            require(memberLogged[msg.sender], "Only members can set their username");
+            require(!memberLogged[msg.sender], "Only members can set their username");
             memberCount++;
-            usernames[msg.sender] = string(abi.encodePacked("member", memberCount));
+            string memory memberCountStr = uintToString(memberCount);
+            usernames[msg.sender] = string(abi.encodePacked("member", memberCountStr));
         }
+    }
+
+    function uintToString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
     }
 
     // Function to read username of the sender

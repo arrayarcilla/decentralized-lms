@@ -42,7 +42,7 @@ function EthProvider({ children }) {
 
   useEffect(() => {
     const events = ["chainChanged", "accountsChanged"];
-    const handleChange = () => {
+    const handleChange = () => { 
       init(state.artifact);
     };
 

@@ -5,15 +5,23 @@ import Login from '../components/Login';
 import useEth from "../contexts/EthContext/useEth.js";
 
 function LandingPage() {
-    const { state } = useEth();
+    const { state: { contract, accounts, artifact } } = useEth();
+    const setUser = async () => {
+        try {
+            await contract.methods.setUsername().send({ from: accounts[0] });
+        } catch (error) {
+            console.log("error: ", error);
+        }
+    }
     return (
         <>
             <div class='landing-content'>
                 {
-                    !state.artifact ? <NoticeNoArtifact /> :
-                        !state.contract ? <NoticeWrongNetwork /> :
+                    !artifact ? <NoticeNoArtifact /> :
+                        !contract ? <NoticeWrongNetwork /> :
                             <Login/>    
                 }
+                <button onClick={setUser}>set user</button>
             </div>
         </>
     );
