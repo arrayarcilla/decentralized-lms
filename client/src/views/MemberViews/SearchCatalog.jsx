@@ -26,7 +26,7 @@ function SearchCatalog() {
                     <Header as='h1' content='Search' />
                     <Segment>
                         <Form>
-                            <Grid columns={2} stackable equal>
+                            <Grid columns={2} stackable>
                                 <GridRow only='computer tablet'>
                                     <GridColumn width={11}>  
                                         <FormGroup widths='equal'>

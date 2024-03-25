@@ -1,12 +1,14 @@
 //--- Important Imports
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 //--- Other Imports
 import { 
     Segment, 
     Grid, GridRow, GridColumn, 
+    Menu, MenuItem,
     Header,
+    Popup,
     Form, FormGroup, FormInput, FormSelect, FormButton,
 	Divider,
     Icon,
@@ -15,6 +17,9 @@ import {
 	} from 'semantic-ui-react';
 
 function AdminCatalogSearch() {
+    const [filterBtnLabel, setfilterBtnLabel] = useState('All Media Types');
+    const handleFilterClick = (e, { content }) => setfilterBtnLabel(content);
+
     const searchOptions = [
 		{ text: 'Default', value: 'default' },
 		{ text: 'Id', value: 'id' },
@@ -29,8 +34,9 @@ function AdminCatalogSearch() {
 	]
 
     return (
+        
         <>
-            <Grid columns={2} stackable relaxed='very' equal>
+            <Grid columns={2} stackable relaxed='very'>
 
                 <GridRow only='computer tablet'>
                     <GridColumn width={8}><Header as='h1' content='Catalog Items' /></GridColumn>
@@ -40,7 +46,7 @@ function AdminCatalogSearch() {
                                 <FormGroup>
                                     <FormSelect options={ searchOptions } placeholder='Default'/>
                                     <FormInput />
-                                    <FormButton content='Search' />
+                                    <FormButton content='Search' primary />
                                 </FormGroup>
                             </Form>
                         </Segment>
@@ -53,7 +59,7 @@ function AdminCatalogSearch() {
                             <Form>
                                 <FormSelect options={ searchOptions } placeholder='Default'/>
                                 <FormInput />
-                                <FormButton content='Search' />
+                                <FormButton content='Search' primary />
                             </Form>
                         </Segment>
                     </GridColumn>
@@ -61,26 +67,34 @@ function AdminCatalogSearch() {
 
                 <Divider />
 
-                <GridRow only='computer'>
-                    <GridColumn width={0}/>
-                    <GridColumn width={16} textAlign='right'>
-                        <Button content='Manual Add' as={ Link } to='/add-item' />
-                        <Button content='Authors' as={ Link } to='/authors'/>
-                        <Button content='Publishers' as={ Link } to='/publishers' />
-                        <Button content='All Media Types' />
-                        <Button content='Reset' />
+                <GridRow>
+                    <GridColumn width={1}/>
+                    <GridColumn width={15} textAlign='right'>
+                        <Button content='Manual Add' link to='/add-item' color='blue' basic />
+                        <Button content='Authors' link to='/authors' color='blue' basic />
+                        <Button content='Publishers' link to='/publishers' color='blue' basic />
+                        <Popup
+                            content={
+                                <Menu vertical>
+                                    <MenuItem content='All Media Types' link onClick={ handleFilterClick } />
+                                    <MenuItem content='Books' link onClick={ handleFilterClick } />
+                                    <MenuItem content='Ebooks' link onClick={ handleFilterClick } />
+                                    <MenuItem content='Magazines' link onClick={ handleFilterClick } />
+                                    <MenuItem content='Newspapers' link onClick={ handleFilterClick } />
+                                    <MenuItem content='Publications' link onClick={ handleFilterClick } />
+                                    <MenuItem content='Thesis' link onClick={ handleFilterClick } />
+                                </Menu>
+                            }
+                            className='filter-menu'
+                            on='click'
+                            pinned
+                            position='bottom left'
+                            trigger={ <Button content={ filterBtnLabel } link color='blue' icon='angle down' basic/> }
+                        />
+                        <Button content='Refresh' link color='blue' icon='refresh' basic />
                     </GridColumn>
                 </GridRow>
-                <GridRow only='tablet mobile'>
-                    <GridColumn width={0}/>
-                    <GridColumn width={16} textAlign='left'>
-                        <Button content='Manual Add' as={ Link } to='/add-item' />
-                        <Button content='Authors' as={ Link } to='/authors'/>
-                        <Button content='Publishers' as={ Link } to='/publishers' />
-                        <Button content='All Media Types' />
-                        <Button content='Reset' />
-                    </GridColumn>
-                </GridRow>
+                
 
             </Grid>
         </>

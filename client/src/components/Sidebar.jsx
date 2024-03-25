@@ -15,7 +15,7 @@ import {
 
 function SideBar() {
     return (
-        <div class="sidebar-content">
+        <div className="sidebar-content">
 					<Sidebar
 							as={Menu}
 							icon="labeled"
@@ -26,76 +26,47 @@ function SideBar() {
 							width="thin"
 					>
 						<Link to='/dashboard'>
-							<MenuItem as="a">
+							<MenuItem link>
 								<Icon name="home" />
 								Dashboard
 							</MenuItem>
 						</Link>
-						
-						<Popup
-							content={
-								<Menu vertical>
-									<Link to='/catalog'>
-										<MenuItem as="a">
-											<Icon name="file outline" />
-											Catalog Items
-										</MenuItem>	
-									</Link> 
-									<Link to='/categories'>
-										<MenuItem as="a">
-											<Icon name="suitcase" />
-											Categories
-										</MenuItem> 
-									</Link>
-									<Link to='/authors'>
-										<MenuItem as="a">
-											<Icon name="user outline" />
-											Authors
-										</MenuItem>
-									</Link>
-									<Link to='/publishers'>
-										<MenuItem as="a">
-											<Icon name="user outline" />
-											Publishers
-										</MenuItem>
-									</Link>
-									<Link to='/tags'>
-										<MenuItem as="a">
-											<Icon name="tag" />
-											Tags
-										</MenuItem>
-									</Link>
-								</Menu>
-							}
-							on="click"
-							position="right center"
-							size="large"
-							pinned
-							trigger={
-								<MenuItem as="a">
-									<Icon name="folder" />
-									Catalogs
-								</MenuItem>
-							}
-						/>
+						<Link to='/catalog'>
+							<MenuItem link>
+								<Icon name="file outline" />
+								Item Catalog
+							</MenuItem>	
+						</Link>
+						<Link to='/authors'>
+							<MenuItem link>
+								<Icon name="pencil alternate" />
+								Authors
+							</MenuItem>
+						</Link>
+						<Link to='/publishers'>
+							<MenuItem link>
+								<Icon name="user outline" />
+								Publishers
+							</MenuItem>
+						</Link>
 
 						<Popup
 							content={
 								<Menu vertical>
 									<Link to="/Member">
-										<MenuItem as="a">
+										<MenuItem link>
 											<Icon name="user outline" />
 											Members
 										</MenuItem> 
 									</Link>
 									<Link to='/circulation'>
-										<MenuItem as="a">
+										<MenuItem link>
 											<Icon name="file alternate outline" />
 											Circulations
 										</MenuItem>	
 									</Link> 
 									<Link to='/fees-and-payments'>
-										<MenuItem as="a">
+										<MenuItem link>
 											<Icon name="calculator" />
 											Fees & Payments
 										</MenuItem>

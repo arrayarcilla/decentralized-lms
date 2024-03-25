@@ -10,7 +10,7 @@ import {
     Container,
     Grid, GridRow, GridColumn,
     Header,
-    Form, FormInput, FormSelect, FormGroup,
+    Form, FormInput, FormSelect, FormGroup, FormButton,
     Icon,
     Image,
     Button,
@@ -28,6 +28,13 @@ function AddItem() {
 		{ text: 'News Clippings', value: 'newsclippings' },
 	];
 
+    const categoryOptions = [
+        { text: 'Fiction', value: 'fiction' },
+        { text: 'Non-Fiction', value: 'nonfiction' },
+        { text: 'References', value: 'references' },
+        { text: 'Others', value: 'others' },
+    ]
+
     return (
         <>
             <SideBar />
@@ -35,23 +42,27 @@ function AddItem() {
                 <Segment padded raised>
                     <Header as='h1' content='Add New Item' />
                     <Divider />
-                    <Form>
-                        <FormSelect 
-                            label='Media Type'
-                            options={mediaOptions}
-                            placeholder='Books'
-                            width={6}
-                        />
-                        <FormInput label='Category' width={6} />
-                        <FormInput label='Title' width={6}/>
-                        <FormInput label='ISBN'  width={6} />
-                        <FormInput label='ISBN 13' width={6} />
-                        <FormInput label='Accession No.' width={6} />
-                        <FormInput label='Publisher' width={6} />
-                        <FormInput label='Edition' width={6} />
-                        <FormInput label='Year' width={6} />
-                        <FormInput label='Tags' width={8}/>
-                    </Form>
+                    <Segment padded raised>
+                        <Form>
+                            <FormSelect 
+                                label='Media Type'
+                                options={mediaOptions}
+                                placeholder='Books'
+                                width={3}
+                            />
+                            <FormSelect 
+                                label='Catgory'
+                                options={categoryOptions}
+                                placeholder='Fiction'
+                                width={3}
+                            />
+                            <FormInput label='Title' width={5}/>
+                            <FormInput label='Publisher' width={5} />
+                            <FormInput label='Accession No.' width={3} />
+                            <FormInput label='ISBN'  width={3} />
+                            <FormButton type='submit' content='Submit' primary/>
+                        </Form>
+                    </Segment>
                 </Segment>
             </div>
         </>

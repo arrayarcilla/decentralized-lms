@@ -1,5 +1,5 @@
 //--- Important Imports
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 //--- Other Imports
@@ -8,78 +8,66 @@ import {
     Menu,
 } from 'semantic-ui-react';
 
-export default class MenuBar extends Component {
-    state = {}
+function MenuBar() {
+    const [activeItem, setActiveItem] = useState(window.location.pathname.slice(1) || '');
+    const handleItemClick = (e, { name }) => setActiveItem(name);
 
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-
-    render() {
-        const { activeItem } = this.state
-
-        return (
-            <>
-                
-                <Menu inverted widths='8' size='large'>
-                    <MenuItem
-                        as={Link} to='/home'
-                        link
-                        name='home'
-                        active={activeItem === 'home'}
-                        onClick={this.handleItemClick}
-                    >
-                        Home
-                    </MenuItem>
-                    <MenuItem
-                        as={Link} to='/member_catalog'
-                        link
-                        name='catalog'
-                        active={activeItem === 'catalog'}
-                        onClick={this.handleItemClick}
-                    >
-                        Catalog
-                    </MenuItem>
-                    <MenuItem
-                        as={Link} to='/search'
-                        link
-                        name='search-catalog'
-                        active={activeItem === 'search-catalog'}
-                        onClick={this.handleItemClick}
-                    >
-                        Search Catalog
-                    </MenuItem>
-                    <MenuItem
-                        as={Link} to='/database'
-                        link
-                        name='database-a-z'
-                        active={activeItem === 'database-a-z'}
-                        onClick={this.handleItemClick}
-                    >
-                        Database A-Z
-                    </MenuItem>
-                    <MenuItem
-                        as={Link} to='/my_account'
-                        link
-                        name='my-account'
-                        active={activeItem === 'my-account'}
-                        onClick={this.handleItemClick}
-                    >
-                        My Account
-                    </MenuItem>
-                    <MenuItem
-                        as={Link} to='/contact'
-                        link
-                        name='ask-librarian'
-                        active={activeItem === 'ask-librarian'}
-                        onClick={this.handleItemClick}
-                    >
-                        Contact Us
-                    </MenuItem>
-                    <div className='menu-content'></div>
-                </Menu>
-                
-            </>
-        )
-    }
+    return (
+        <> 
+            <Menu inverted widths='8' size='large'>
+                <MenuItem
+                    content='Home'
+                    as={Link} to='/home'
+                    link
+                    name='home'
+                    active={activeItem === 'home'}
+                    onClick={handleItemClick}
+                />
+                <MenuItem
+                    content='Catalog'
+                    as={Link} to='/member_catalog'
+                    link
+                    name='member_catalog'
+                    active={activeItem === 'member_catalog'}
+                    onClick={handleItemClick}
+                />
+                <MenuItem
+                    content='Search Catalog'
+                    as={Link} to='/search'
+                    link
+                    name='search'
+                    active={activeItem === 'search'}
+                    onClick={handleItemClick}
+                />
+                <MenuItem
+                    content='Database A-Z'
+                    as={Link} to='/database'
+                    link
+                    name='database'
+                    active={activeItem === 'database'}
+                    onClick={handleItemClick}
+                />
+                <MenuItem
+                    content='My Account'
+                    as={Link} to='/my_account'
+                    link
+                    name='my_account'
+                    active={activeItem === 'my_account'}
+                    onClick={handleItemClick}
+                />
+                <MenuItem
+                    content='Contact Us'
+                    as={Link} to='/contact'
+                    link
+                    name='contact'
+                    active={activeItem === 'contact'}
+                    onClick={handleItemClick}
+                />
+                <div className='menu-content'></div>
+            </Menu>
+            
+        </>
+    )
 }
 
-
+export default MenuBar
